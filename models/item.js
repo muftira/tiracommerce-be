@@ -13,10 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
 
       Item.belongsTo(models.User, {foreignKey: "userId"})
+      Item.belongsTo(models.Category, {foreignKey: "categoryId"})
 
       //super many to many
       Item.belongsToMany(models.Cart, {through: models.Cart_item, foreignKey: "itemId"})
       Item.hasMany(models.Cart_item, {as: "ItemsProduct", foreignKey:"itemId"})
+      Item.hasMany(models.Image, {foreignKey:"itemId"})
       
     }
   }
@@ -24,9 +26,10 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     productName: DataTypes.STRING,
     price: DataTypes.DOUBLE,
-    category: DataTypes.INTEGER,
+    categoryId: DataTypes.INTEGER,
     size: DataTypes.STRING,
     color: DataTypes.STRING,
+    // imageId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Item',

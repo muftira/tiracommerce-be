@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.belongsTo(models.Role, {foreignKey: "roleId"})
+
       User.hasMany(models.Order,{foreignKey:'userId'})
       User.hasMany(models.Cart, {foreignKey: "userId"})
       User.hasMany(models.Item, {foreignKey: "userId"})
@@ -22,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
     address: DataTypes.STRING,
     phone: DataTypes.STRING,
-    role: DataTypes.INTEGER,
+    roleId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'User',

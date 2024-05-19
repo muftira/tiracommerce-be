@@ -24,8 +24,14 @@ module.exports = {
       price: {
         type: Sequelize.DOUBLE
       },
-      category: {
-        type: Sequelize.INTEGER
+      categoryId: {
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: "Categories",
+          key: "id",
+          as: "categoryId"
+        }
       },
       size: {
         type: Sequelize.STRING
@@ -33,6 +39,15 @@ module.exports = {
       color: {
         type: Sequelize.STRING
       },
+      // imageId: {
+      //   type: Sequelize.INTEGER,
+      //   onDelete: 'CASCADE',
+      //   references: {
+      //     model: "Images",
+      //     key: "id",
+      //     as: "imageId"
+      //   }
+      // },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

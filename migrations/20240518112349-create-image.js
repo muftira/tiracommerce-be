@@ -10,7 +10,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       itemId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: "Items",
+          key: "id",
+          as: "itemId"
+        }
       },
       url: {
         type: Sequelize.STRING
