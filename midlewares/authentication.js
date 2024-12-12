@@ -1,10 +1,11 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require('dotenv')
 dotenv.config({path: '.env'})
+const ErrorResponse = require('../helpers/error.helper')
 
 const JWT_SECRET = process.env.JWT_SECRET
 
-exports.authentication = (req, res, next) => {
+const authentication = (req, res, next) => {
     const authHeader = req.headers.authorization
 
     if (authHeader) {
@@ -25,3 +26,23 @@ exports.authentication = (req, res, next) => {
         })
     }
 }
+
+const adminRole = async (req, res, next) => {
+    try {
+      const user = req.user;
+
+      if (user.role !== 'admin') {
+        throw new ErrorResponse(403, "you don't have permission to access this resource");
+      }
+  
+      next();
+    } catch (err) {
+      next(err);
+    }
+  };
+
+module.exports = {
+    authentication,
+    adminRole
+}
+

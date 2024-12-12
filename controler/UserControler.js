@@ -108,8 +108,8 @@ class UserController {
     async loginUser(req, res, next) {
         try {
             const { email, password } = req.body
-            const checkUser = await User.findOne({ where: { email } })
-
+            const checkUser = await User.findOne({ where: { email }, include: { model: Role } })
+    
             if (!checkUser) {
                 throw new ErrorResponse(401, {}, 'Email not Found')
             }
@@ -120,7 +120,7 @@ class UserController {
                 throw new ErrorResponse(401, {}, 'Wrong Password')
             }
 
-            const _token = jwt.sign({ email, id: checkUser.dataValues.id }, JWT_SECRET, { expiresIn: '24h' });
+            const _token = jwt.sign({ email, id: checkUser.dataValues.id, role: checkUser.Role.roleName }, JWT_SECRET, { expiresIn: '24h' });
 
             return res.status(200).json({
                 status: true,
