@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       //super many to many
       Item.belongsToMany(models.Cart, {through: models.Cart_item, foreignKey: "itemId"})
       Item.hasMany(models.Cart_item, {as: "ItemsProduct", foreignKey:"itemId"})
-      Item.hasMany(models.Image, {foreignKey:"itemId"})
+      Item.hasMany(models.ImageItem, {foreignKey:"itemId"})
       
     }
   }
@@ -29,7 +29,6 @@ module.exports = (sequelize, DataTypes) => {
     categoryId: DataTypes.INTEGER,
     size: DataTypes.STRING,
     color: DataTypes.STRING,
-    // imageId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Item',
