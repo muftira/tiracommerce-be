@@ -16,7 +16,7 @@ class ItemController {
           },
           {
             model: ImageItem,
-          }
+          },
         ],
       });
       return new SuccessResponse(res, 200, result, "Success");
@@ -40,7 +40,7 @@ class ItemController {
           },
           {
             model: ImageItem,
-          }
+          },
         ],
       });
       return new SuccessResponse(res, 200, result, "Success");
@@ -53,7 +53,6 @@ class ItemController {
     try {
       const { userId } = req.params;
       const { productName, price, categoryName, size, color } = req.body;
-      console.log("FILES =>", req.files);
       const category = await Category.create({ categoryName });
       const result = await Item.create({
         userId,
@@ -80,16 +79,46 @@ class ItemController {
 
   async updateItem(req, res, next) {
     try {
-      const { id } = req.params;
-      const { productName, price } = req.body;
-      const result = await Item.update(
-        { productName, price },
+      const { itemId, categoryId, imageId } = req.params;
+      const { productName, price, categoryName, size, color } = req.body;
+      const category = await Category.update(
+        { categoryName },
         {
           where: {
-            id,
+            id: categoryId,
           },
         }
       );
+      const result = await Item.update(
+        { productName, price, categoryId: category.id, size, color },
+        {
+          where: {
+            id: itemId,
+          },
+        }
+      );
+    //   console.log('imageId=>', imageId);
+    //   console.log('datatype=>', typeof(imageId));
+    //   console.log('datatypeitem=>', typeof(itemId));
+
+    //   console.log('array=>', imageId.split(','));
+      
+    //   await Promise.all(
+    //     req.files.map((file) =>
+    //       ImageItem.update(
+    //         {
+    //           cloudinaryId: file.filename,
+    //           url: file.path,
+    //           itemId,
+    //         },
+    //         {
+    //           where: {
+    //             itemId,
+    //           },
+    //         }
+    //       )
+    //     )
+    //   );
       return new SuccessResponse(res, 200, result, "Success");
     } catch (error) {
       next(error);

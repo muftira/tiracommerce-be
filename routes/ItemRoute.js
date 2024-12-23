@@ -8,7 +8,7 @@ const upload = require("../midlewares/multer");
 router.get('/item', itemController.getItem)
 router.get('/item/:id', itemController.getItembyId)
 router.post('/itemproduct/:userId', authentication, adminRole, upload.array("imageProduct", 3), itemController.addItem)
-router.put('/item/:id', authentication, adminRole, itemController.updateItem)
+router.put('/item/:itemId/:categoryId/:imageId', authentication, adminRole, upload.array("imageProduct", 3), itemController.updateItem)
 router.delete('/item/:id', authentication, adminRole, itemController.deleteItem)
 
 module.exports = router
