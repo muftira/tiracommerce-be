@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
   ImageItem.init({
     itemId: DataTypes.INTEGER,
     cloudinaryId: DataTypes.STRING,
-    url: DataTypes.STRING
+    url: DataTypes.STRING,
+    statusDeleted: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'ImageItem',

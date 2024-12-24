@@ -1,6 +1,6 @@
 const { Item, User, Category, ImageItem } = require("../models");
 const SuccessResponse = require("../helpers/Success.helper");
-const imageitem = require("../models/imageitem");
+const cloudinary = require('cloudinary').v2;
 
 class ItemController {
   async getItem(req, res, next) {
@@ -79,8 +79,9 @@ class ItemController {
 
   async updateItem(req, res, next) {
     try {
-      const { itemId, categoryId, imageId } = req.params;
-      const { productName, price, categoryName, size, color } = req.body;
+      const { itemId } = req.params;
+      const { categoryId } = req.query
+      const { productName, price, categoryName, size, color, deletedStatus } = req.body;
       const category = await Category.update(
         { categoryName },
         {
@@ -97,28 +98,19 @@ class ItemController {
           },
         }
       );
-    //   console.log('imageId=>', imageId);
-    //   console.log('datatype=>', typeof(imageId));
-    //   console.log('datatypeitem=>', typeof(itemId));
 
-    //   console.log('array=>', imageId.split(','));
-      
-    //   await Promise.all(
-    //     req.files.map((file) =>
-    //       ImageItem.update(
-    //         {
-    //           cloudinaryId: file.filename,
-    //           url: file.path,
-    //           itemId,
-    //         },
-    //         {
-    //           where: {
-    //             itemId,
-    //           },
-    //         }
-    //       )
-    //     )
-    //   );
+      if (deletedStatus) {
+        const validData = deletedStatus.replace(/([{,]\s*)(\w+):/g, '$1"$2":')
+        const parseDeletedStatus = JSON.parse(validData);
+        const imageStatus = await Promise.all(parseDeletedStatus.map((data, index) => ImageItem.update({ statusDeleted: data.status }, { where: { id: data.id } })))
+        const imageDeleted = await ImageItem.destroy({ where: { statusDeleted: true } })
+        const cloudinaryDeleted = await Promise.all(parseDeletedStatus.map(data => cloudinary.uploader.destroy(data.cloudinaryId)))
+      }
+
+      if (req.files.length > 0) {
+        const imageUpdate = await Promise.all(req.files.map(file => ImageItem.create({ cloudinaryId: file.filename, url: file.path, itemId })))
+      }
+
       return new SuccessResponse(res, 200, result, "Success");
     } catch (error) {
       next(error);
